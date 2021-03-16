@@ -8,7 +8,6 @@ function sweetSalty(arg1, arg2)
     let newStr = "";
     for (var i = arg1; i <= arg2; i++)
     {
-
         // Print a line break after 10 numbers have been printed
         if (i % lineBreak == 0)
         {
