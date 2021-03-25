@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="headerDiv"></div>
+    <div id="mainDiv"></div>
+    <div id="displayDiv"></div>
+    <div id="listDiv"></div>
+    <div id="totalDiv"></div>
+    <div id="resetDiv"></div>
+
+    <!-- Styling for the elements -->
+    <style>
+        h1 {
+            color: blue;
+        }
+
+        p {
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            font-style: italic;
+        }
+
+        div {
+            background-color: lightgreen;
+        }
+
+        body {
+            background-color: lightgoldenrodyellow;
+        }
+
+        .button {
+            box-shadow: 0px 1px 0px 0px #fff6af;
+            background:linear-gradient(to bottom, #ffec64 5%, #ffab23 100%);
+            background-color:#ffec64;
+            border-radius:6px;
+            border:1px solid #ffaa22;
+            display:inline-block;
+            cursor:pointer;
+            color:#333333;
+            font-family:Arial;
+            font-size:15px;
+            font-weight:bold;
+            padding:6px 24px;
+            text-decoration:none;
+            text-shadow:0px 1px 0px #ffee66;  
+        }
+
+        .button:hover {
+            background:linear-gradient(to bottom, #ffab23 5%, #ffec64 100%);
+	        background-color:#ffab23;            
+        }
+
+        .textBox { 
+            background: white; 
+            border: 1px solid #ffa853; 
+            border-radius: 5px; 
+            box-shadow: 0 0 5px 3px #ffa853; 
+            color: #666; 
+            outline: none; 
+            height:23px; 
+            width: 275px; 
+        }
+
+        .textBox:hover {
+            height: 26px;
+            width: 278px;
+        }
+
+        /* End of Styling */
+    </style>
+
+
+    <!-- JavaScript Code for the application -->
+    <script type="text/javascript">
+
+        // Setting variables for primary elements
+        let textInput = document.querySelector("#textInput");
+        let mainDiv = document.querySelector("#mainDiv");
+        let headerDiv = document.querySelector("#headerDiv");
+        let displayDiv = document.querySelector("#displayDiv");
+        let listDiv = document.querySelector("#listDiv");
+        let totalDiv = document.querySelector('#totalDiv');
+        let resetDiv = document.querySelector("#resetDiv");
+        let listBreak = document.createElement("br");
+        let listPara = document.createElement('p');
+        let blankPara = document.createElement('p');
+
+        // Setting variables for the numbers the user will input
+        let smallNumber = 0;
+        let bigNumber = 0;
+        let lineCount = 0;
+
+        // Setting variables the app uses for calculation and output
+        let sweetInt = 3;
+        let saltyInt = 5;
+        let sweetString = "sweet";
+        let saltyString = "salty";
+        let sweetSaltyString = "sweet'nSalty";
+        let lineBreak = "<br/>";
+        let lineBreakStr = "\n";
+        let sweetSaltySpace = " ";
+        let countSalty = 0;
+        let countSweet = 0;
+        let countSweetSalty = 0;
+
+        // Start of app will load the instructions
+        // Instructions are inserted into the Header Div
+        // Each instruction is a paragraph tag, with associated text added as child node
+        window.onload = function LoadInstructions() {
+            let tempHeader = document.createElement('h1');
+            let welcomeNode = document.createTextNode("Welcome to Sweet'nSalty");
+
+            let instruction = document.createElement('p');
+            let inst1 = document.createTextNode("This app will list a set of numbers based on a range that you provide.");
+            instruction.appendChild(inst1);
+
+            let instruction2 = document.createElement('p');
+            let inst2 = document.createTextNode("A number divisible by three will be transformed into the word: sweet.");
+            instruction2.appendChild(inst2);
+
+            let instruction3 = document.createElement('p');
+            let inst3 = document.createTextNode("A number divisible by five will be transformed into the word: salty.");
+            instruction3.appendChild(inst3);
+
+            let instruction4 = document.createElement('p');
+            let inst4 = document.createTextNode("A number divisible by three and five will be transformed into the word: sweet'nSalty.");
+            instruction4.appendChild(inst4);
+
+            tempHeader.appendChild(welcomeNode);
+
+            headerDiv.appendChild(tempHeader);
+            headerDiv.appendChild(instruction);
+            headerDiv.appendChild(instruction2);
+            headerDiv.appendChild(instruction3);
+            headerDiv.appendChild(instruction4);
+
+            // pass values to next screen so they can be removed from the canvas
+            addSmallInput(tempHeader, instruction, instruction2, instruction3, instruction4);
+        }
+
+        // This function is used to get the beginning number, and to remove the 
+        // elements from previous screen when user presses the Enter button.
+        function addSmallInput(tempHeader, instruction, instruction2, instruction3, instruction4) {
+            let smallPara = document.createElement("p");
+            let smallInput = document.createElement("input");
+
+            smallPara.textContent = "Enter the beginning number: ";
+            smallPara.setAttribute("id", "smallPara");
+
+            smallInput.setAttribute("class", "textBox");
+
+            mainDiv.appendChild(smallPara);
+            mainDiv.appendChild(smallInput);
+
+            smallInput.addEventListener("change", (event) => {
+                event.preventDefault();
+                smallNumber = smallInput.value;
+
+                if (smallNumber < 1){
+                    smallNumber = 1;
+                }
+
+                if (smallNumber > 50000) {
+                    smallNumber = 50000;
+                }
+
+
+                mainDiv.removeChild(smallPara);
+                mainDiv.removeChild(smallInput);
+                headerDiv.removeChild(tempHeader);
+                headerDiv.removeChild(instruction);
+                headerDiv.removeChild(instruction2);
+                headerDiv.removeChild(instruction3);
+                headerDiv.removeChild(instruction4);
+
+                // call to next screen with the button string used to create the button
+                add("button");
+            });            
+
+        }
+
+        // This function is used to provide user with next set of instructions, 
+        // and to Create the First Enter Button
+        function add(type) {
+            let temp = document.getElementById("mainDiv");
+
+            let instruct = document.createElement('p');
+            let instructText = document.createTextNode(`Press enter to continue\n`);
+            instruct.appendChild(instructText);
+            let firstButton = document.createElement("input");
+
+            firstButton.setAttribute("type", type);
+            firstButton.setAttribute("value", "Enter");
+            firstButton.setAttribute("name", type);
+            firstButton.setAttribute("class", "button");
+
+            temp.appendChild(instruct);
+            temp.appendChild(listBreak);
+            temp.appendChild(firstButton);
+            
+            firstButton.addEventListener("click", (event) => {
+
+                // call to next function to remove elements, and add the next input screen
+                addLargeInput(firstButton, instruct);
+            });
+        }
+
+        // This function removes the elements from the previous screen, and creates
+        // the instructions for next step, and the Big Number input box
+        function addLargeInput(firstButton, instruct) {
+            mainDiv.removeChild(firstButton); 
+            mainDiv.removeChild(instruct);
+
+            let largePara = document.createElement("p");
+            let largeInput = document.createElement("input");
+            
+            largePara.textContent = "Enter the ending number: ";
+            largePara.setAttribute("id", "largePara");
+
+            largeInput.setAttribute("class", "textBox");
+
+            mainDiv.appendChild(largePara);
+            mainDiv.appendChild(largeInput);
+
+            let minCheck = parseInt(smallNumber) + 200;
+            console.log(`MinCheck: ${minCheck}`);
+
+            largeInput.addEventListener("change", (event) => {
+                event.preventDefault();
+                bigNumber = parseInt(largeInput.value);
+
+                if (bigNumber < minCheck){
+                    bigNumber = minCheck;    
+                }
+
+                let maxCheck = bigNumber - parseInt(smallNumber);
+                console.log(`MaxCheck: ${maxCheck}`);
+                if (maxCheck > 10000){
+                    bigNumber = 10000 + parseInt(smallNumber);
+                }
+
+                mainDiv.removeChild(largePara);
+                mainDiv.removeChild(largeInput);
+
+                // call to next fuction to create the button
+                addSecond("button");
+            });
+        }
+
+        // This function is used to provide user with next set of instructions, 
+        // and to Create the next Enter Button
+        function addSecond(type) {
+            let instruct = document.createElement('p');
+            let instructText = document.createTextNode(`Press enter to continue\n`);
+            instruct.appendChild(instructText);            
+
+            let nextButton = document.createElement("input");
+            nextButton.setAttribute("type", type);
+            nextButton.setAttribute("value", "Enter");
+            nextButton.setAttribute("name", type);
+            nextButton.setAttribute("class", "button");
+
+            mainDiv.appendChild(instruct);
+            mainDiv.appendChild(listBreak);
+            mainDiv.appendChild(nextButton);
+
+            nextButton.addEventListener("click", (event) => {
+
+                // call to next function to inform user to add Line Count
+                addLineInput(nextButton, instruct);
+            });
+        }
+
+        // This function is used to inform user to add number of Items per Line
+        // and to remove elements from previous screen
+        function addLineInput(nextButton, instruct) {
+            mainDiv.removeChild(nextButton);
+            mainDiv.removeChild(instruct);
+
+            let linePara = document.createElement('p');
+            let lineInput = document.createElement('input');
+
+            linePara.textContent = "Enter the number of items per line: ";
+            linePara.setAttribute("id", "linePara");
+            
+            lineInput.setAttribute("class", "textBox");
+
+            mainDiv.appendChild(linePara);
+            mainDiv.appendChild(lineInput);
+
+            let total = parseInt(smallNumber) + parseInt(bigNumber);
+
+            lineInput.addEventListener("change", (event) => {
+                event.preventDefault();
+                lineCount = parseInt(lineInput.value);
+
+                if (lineCount < (total/100)){
+                    lineCount = parseInt(total/100);
+                }
+
+                mainDiv.removeChild(linePara);
+                mainDiv.removeChild(lineInput);
+
+                // call to next function
+                PrintNums();
+            });
+        }
+
+        // This functions prints the beginning number, ending number, and
+        // number of items per line that the user had previously entered.
+        function PrintNums() {
+            let smallNumPara = document.createElement('p');
+            let bigNumPara = document.createElement('p');
+            let lineCountPara = document.createElement('p');
+
+            let smallNumParaText = document.createTextNode(`Your start number is: ${smallNumber}`);
+            smallNumPara.appendChild(smallNumParaText);
+
+            let bigNumParaText = document.createTextNode(`Your last number is: ${bigNumber}`);
+            bigNumPara.appendChild(bigNumParaText);
+
+            let lineCountParaText = document.createTextNode(`Item count per line is: ${lineCount}`);
+            lineCountPara.appendChild(lineCountParaText);
+
+            displayDiv.appendChild(smallNumPara);
+            displayDiv.appendChild(bigNumPara);
+            displayDiv.appendChild(lineCountPara);
+
+            // call to next function
+            SSCalculation(smallNumber, bigNumber, lineCount);
+        }
+
+        // This function is used to perform the sweetnsalty calculation
+        // The result is stored in a string that is passed to the next function
+        function SSCalculation(sNum, bNum, lCount){
+            let newStr ="";
+            let listPara = document.createElement('p');
+            
+            for (let i = sNum; i <= bNum; i++)
+            {
+                if (i % sweetInt == 0 && i % saltyInt == 0) {
+                    newStr = newStr + sweetSaltyString + sweetSaltySpace;
+                    countSweetSalty += 1;
+                }
+                else if (i % sweetInt == 0) {
+                    newStr += sweetString + sweetSaltySpace;
+                    countSweet += 1;
+                }
+                else if (i % saltyInt == 0) {
+                    newStr += saltyString + sweetSaltySpace;
+                    countSalty += 1;
+                }
+                else
+                {
+                    newStr += i + sweetSaltySpace;
+                }
+
+            }
+
+            // call to the display function
+            DisplayList(newStr, lCount);
+        }
+
+
+        // This function takes the string of results and splits the string into an array.
+        // The array is parsed so that numbers can be converted to LocaleString so that
+        // values over 999 are comma separated
+        // The results of the parsing are then iterated and printed to a paragraph element 
+        function DisplayList(ssList, lCount){
+
+            listDiv.appendChild(listPara);
+
+            let strArray = ssList.split(" ");
+            console.log(`Array Length: ${strArray.length}`);
+
+            // values that are numbers are parsed to LocaleString() so that values
+            // over 999 are printed comma separated
+            for (let i = 0; i < strArray.length; i++) {
+                if (strArray[i] === sweetString) {
+                    continue;
+                }
+                else if (strArray[i] === saltyString) {
+                    continue;
+                }
+                else if (strArray[i] === sweetSaltyString) {
+                    continue;
+                }
+                else if (strArray[i] == 0){
+                    continue;
+                }
+                else {
+                    strArray[i] = Number(strArray[i]).toLocaleString();
+                }
+            }
+
+            // the values are iterated and printed to paragraph element
+            for (let i = 1; i < strArray.length; i++) {
+                listPara.innerText += strArray[i-1];
+                listPara.innerHTML += "&nbsp";
+
+                if (i % lCount == 0) {
+                    listPara.appendChild(listBreak);
+                }
+            }
+
+            // display totals and remove the previous elements
+            DisplayTotals();
+        }
+
+        // This function creates para and adds them the totalDiv
+        function DisplayTotals() {
+            let sweetCountPara = document.createElement('p');
+            let saltyCountPara = document.createElement('p');
+            let sweetSaltyCountPara = document.createElement('p');
+            let totalPara = document.createElement('p');
+
+            sweetCountNode = 
+                document.createTextNode(`Sweet: ${countSweet}`);
+            saltyCountNode = 
+                document.createTextNode(`Salty: ${countSalty}`);
+            sweetSaltyNode = 
+                document.createTextNode(`Sweet'nSalty: ${countSweetSalty}`);
+            totalNode = document.createTextNode(`\nTotals: `);
+
+            sweetCountPara.appendChild(sweetCountNode);
+            saltyCountPara.appendChild(saltyCountNode);
+            sweetSaltyCountPara.appendChild(sweetSaltyNode);
+            totalPara.appendChild(totalNode);
+
+            totalDiv.appendChild(totalPara);
+            totalDiv.appendChild(sweetCountPara);
+            totalDiv.appendChild(saltyCountPara);
+            totalDiv.appendChild(sweetSaltyCountPara);
+
+            // go the reset function
+            GetReset();
+        }
+
+
+        // This function presents the button enabling the customer
+        // to reset the screen.
+        function GetReset(){
+
+            let instruct = document.createElement('p');
+            let instructText = document.createTextNode(`Press Restart to continue\n`);
+            instruct.appendChild(instructText); 
+
+            let resetButton = document.createElement("input");
+            resetButton.setAttribute("type", "button");
+            resetButton.setAttribute("value", "Restart");
+            resetButton.setAttribute("name", "button");
+            resetButton.setAttribute("class", "button");
+
+            resetDiv.appendChild(instruct);
+            resetDiv.appendChild(listBreak);
+            resetDiv.appendChild(resetButton);
+            
+            resetButton.addEventListener("click", (event) => {
+                window.location.reload(false);
+            });
+
+        }
+
+        // end of script
+    </script>
+</body>
+</html>
